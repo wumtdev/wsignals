@@ -26,7 +26,7 @@ git clone https://github.com/wumtdev/wsignals.git
 git clone git@github.com:wumtdev/wsignals.git
 ```
 
-In the environment where you need to install wauxio, install library as a local package. Specify path to cloned repository.
+In the environment where you need to install library, install it as a local package. Specify path to cloned repository.
 ```sh
 pip install /path/to/cloned_repo
 ```
