@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["wsignals*"]
+
+
+[project]
+name = "wsignals"
+version = "0.1.0"
+description = "Library for event emitting and handling"
+readme = "README.md"
+authors = [{ name = "WuMT" }]
+requires-python = ">=3.6"
+
+[project.urls]
+Homepage = "https://github.com/wumtdev/wsignals"

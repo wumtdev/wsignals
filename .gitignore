@@ -1,0 +1,13 @@
+# Python stuff
+**/.venv
+**/venv
+**/__pycache__
+**/*.egg-info
+**/dist
+**/build
+
+# IDE
+**/.vscode
+
+# Testing/temporary
+**/data
