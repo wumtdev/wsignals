@@ -9,7 +9,7 @@ include = ["wsignals*"]
 
 [project]
 name = "wsignals"
-version = "0.1.0"
+version = "0.2.0"
 description = "Library for event emitting and handling"
 readme = "README.md"
 authors = [{ name = "WuMT" }]
