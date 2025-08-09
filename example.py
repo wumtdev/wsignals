@@ -28,9 +28,6 @@ async def timer():
 def sync_handler():
 	print('sync_handler: tick handled')
 
-async def async_handler():
-	print('async_handler: tick handled')
-
 async def main():
 	loop = asyncio.get_running_loop()
 	print('main: starting timer')
@@ -39,16 +36,22 @@ async def main():
 	print('main: timer started')
 
 	on_tick.connect(sync_handler)
-	on_tick.connect_async(async_handler)
+
+	@on_tick
+	async def async_handler():
+		print('async_handler: tick handled')
 
 	try:
 		while True:
 			print('main: waiting tick')
-			await on_tick.next(future=loop.create_future())
+			await on_tick.next()
 			print('main: tick handled')
 	except CancelledError:
 		global stop
 		stop = True
 
 if __name__ == '__main__':
-	asyncio.run(main())
+	try:
+		asyncio.run(main())
+	except KeyboardInterrupt:
+		print('keyboard interrupted')

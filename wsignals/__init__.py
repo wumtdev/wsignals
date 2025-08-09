@@ -1,25 +1,31 @@
 import asyncio
 from asyncio import AbstractEventLoop, Future
-from dataclasses import dataclass
-from typing import Callable, Coroutine, List, Optional
+from typing import Callable, Coroutine, List, Optional, Union
 
 
-type IListener = Callable[..., None | bool]
-type IAsyncCallback = Callable[..., Coroutine[None, None, None]]
+IListener = Callable[..., Optional[bool]]
+IAsyncCallback = Callable[..., Coroutine[None, None, None]]
 
-@dataclass
+
 class AsyncListener:
 	callback: IAsyncCallback
 	loop: AbstractEventLoop
+
+	def __init__(self, callback: IAsyncCallback, loop: Optional[AbstractEventLoop]):
+		self.callback = callback
+		self.loop = loop or asyncio.get_running_loop()
 
 	def __call__(self, *args, **kwargs):
 		loop = self.loop
 		if loop.is_closed(): return True
 		loop.create_task(self.callback(*args, **kwargs))
 
-@dataclass
+
 class FutureListener:
 	future: Future
+
+	def __init__(self, future: Optional[Future] = None, loop: Optional[AbstractEventLoop] = None):
+		self.future = future or (loop or asyncio.get_running_loop()).create_future()
 
 	def __call__(self, *args, **kwargs):
 		future = self.future
@@ -28,23 +34,29 @@ class FutureListener:
 		loop.call_soon_threadsafe(future.set_result, (args, kwargs))
 		return True
 
+
 class Signal:
 	listeners: List[IListener]
 
 	def __init__(self):
 		self.listeners = list()
 	
-	def connect(self, listener: IListener):
-		self.listeners.append(listener)
-	
-	def __call__(self, listener: IListener) -> IListener:
+	def connect_sync(self, listener: IListener):
 		self.listeners.append(listener)
 		return listener
 	
-	def connect_async(self, callback: IAsyncCallback, loop: Optional[AbstractEventLoop] = None):
-		if not loop:
-			loop = asyncio.get_running_loop()
-		self.listeners.append(AsyncListener(callback=callback, loop=loop))
+	def connect(self, listener: Optional[Union[IListener, IAsyncCallback]] = None, loop: Optional[AbstractEventLoop] = None) -> IListener:
+		if listener is None:
+			return lambda l: self.connect(listener=l, loop=loop)
+		
+		if asyncio.iscoroutinefunction(listener):
+			self.listeners.append(AsyncListener(callback=listener, loop=loop))
+		else:
+			self.listeners.append(listener)
+
+		return listener
+	
+	__call__ = connect
 	
 	def next(self, future: Optional[Future] = None, loop: Optional[AbstractEventLoop] = None) -> Future:
 		if not future:
