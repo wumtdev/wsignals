@@ -1,6 +1,6 @@
 
 # wsignals
-v0.2.1
+v0.2.2
 
 Library for event emitting and handling
 

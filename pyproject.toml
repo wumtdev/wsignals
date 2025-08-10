@@ -1,14 +1,23 @@
 [project]
 name = "wsignals"
-version = "0.2.1"
+version = "0.2.2"
 description = "Library for event emitting and handling"
 requires-python = ">=3.6"
 readme = "README.md"
 authors = [{ name = "WuMT" }]
-license = { text = "MIT" }
+license = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/wumtdev/wsignals"
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0.1",
+    "pytest-asyncio>=0.16.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"  # Auto-detect async tests
 
 [build-system]
 requires = ["hatchling"]
