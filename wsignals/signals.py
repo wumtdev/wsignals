@@ -87,7 +87,7 @@ class Signal:
 		if asyncio.iscoroutinefunction(listener):
 			self.connect_async(listener, loop=loop)
 		else:
-			self.connect_sync(listener, loop=loop)
+			self.connect_sync(listener)
 
 		return listener
 	
