@@ -3,15 +3,15 @@ from asyncio import AbstractEventLoop, Future
 from typing import Callable, Coroutine, List, Optional, Union
 
 
-IListener = Callable[..., Optional[bool]]
-IAsyncCallback = Callable[..., Coroutine[None, None, None]]
+ListenerType = Callable[..., Optional[bool]]
+AsyncCallbackType = Callable[..., Coroutine[None, None, None]]
 
 
 class AsyncListener:
-	callback: IAsyncCallback
+	callback: AsyncCallbackType
 	loop: AbstractEventLoop
 
-	def __init__(self, callback: IAsyncCallback, loop: Optional[AbstractEventLoop]):
+	def __init__(self, callback: AsyncCallbackType, loop: Optional[AbstractEventLoop]):
 		self.callback = callback
 		self.loop = loop or asyncio.get_running_loop()
 
@@ -36,16 +36,16 @@ class FutureListener:
 
 
 class Signal:
-	listeners: List[IListener]
+	listeners: List[ListenerType]
 
 	def __init__(self):
 		self.listeners = list()
 	
-	def connect_sync(self, listener: IListener):
+	def connect_sync(self, listener: ListenerType):
 		self.listeners.append(listener)
 		return listener
 	
-	def connect(self, listener: Optional[Union[IListener, IAsyncCallback]] = None, loop: Optional[AbstractEventLoop] = None) -> IListener:
+	def connect(self, listener: Optional[Union[ListenerType, AsyncCallbackType]] = None, loop: Optional[AbstractEventLoop] = None) -> ListenerType:
 		if listener is None:
 			return lambda l: self.connect(listener=l, loop=loop)
 		
