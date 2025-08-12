@@ -1,6 +1,6 @@
 [project]
 name = "wsignals"
-version = "0.2.2"
+version = "0.2.3"
 description = "Library for event emitting and handling"
 requires-python = ">=3.6"
 readme = "README.md"

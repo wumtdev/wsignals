@@ -1,6 +1,6 @@
 
 # wsignals
-v0.2.2
+v0.2.3
 
 Library for event emitting and handling
 
@@ -33,4 +33,41 @@ pip install /path/to/cloned_repo
 
 
 ## Usage
-TODO: There will be guides for library usage :(
+
+### Simple
+```py
+from wsignals import Signal
+
+on_start = Signal()
+
+@on_start
+def log_start():
+	print('started')
+
+on_start.call()
+```
+
+### Class + Async
+```py
+import asyncio
+from wsignals import Signal
+
+class Dog:
+	def __init__(self, name: str):
+		self.on_bark = Signal()
+		self.name = name
+	
+	def bark(self, msg: str):
+		print('bark!')
+		self.on_bark.call(msg)
+
+async def main():
+	gamma = Dog('Gamma')
+	
+	@gamma.on_bark
+	async def handle_gamma_bark(msg):
+		print(f'Gamma barked: {msg}')
+	
+	gamma.bark()
+
+asyncio.run(main())
